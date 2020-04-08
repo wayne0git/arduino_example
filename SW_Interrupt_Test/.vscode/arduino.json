@@ -1,0 +1,6 @@
+{
+    "sketch": "LCD_Test.ino",
+    "output": "build",
+    "board": "arduino:avr:nano",
+    "configuration": "cpu=atmega328old"
+}
