@@ -25,10 +25,18 @@
 #include "esp_http_server.h"
 
 //Replace with your network credentials
-const char* ssid = "REPLACE_WITH_YOUR_SSID";
-const char* password = "REPLACE_WITH_YOUR_PASSWORD";
+const char* ssid = "ESP32-CAM Access Point";
+const char* password = "123456789";
 
 #define PART_BOUNDARY "123456789000000000000987654321"
+
+// Set your Static IP address
+IPAddress local_IP(192, 168, 1, 184);
+// Set your Gateway IP address
+IPAddress gateway(192, 168, 1, 1);
+IPAddress subnet(255, 255, 0, 0);
+IPAddress primaryDNS(8, 8, 8, 8); //optional
+IPAddress secondaryDNS(8, 8, 4, 4); //optional
 
 // This project was tested with the AI Thinker Model, M5STACK PSRAM Model and M5STACK WITHOUT PSRAM
 #define CAMERA_MODEL_AI_THINKER
@@ -243,6 +251,13 @@ void setup() {
     Serial.printf("Camera init failed with error 0x%x", err);
     return;
   }
+
+  /* Use existed Wi-Fi
+  // Set static IP
+  if(!WiFi.config(local_IP, gateway, subnet, primaryDNS, secondaryDNS)) {
+    Serial.println("STA Failed to configure");
+  }
+
   // Wi-Fi connection
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
@@ -251,7 +266,17 @@ void setup() {
   }
   Serial.println("");
   Serial.println("WiFi connected");
-  
+  */
+
+  // Set ESP32-CAM as an access point
+  // Wi-Fi connection
+  WiFi.mode(WIFI_AP);
+  WiFi.softAP(ssid, password);  
+  delay(100);
+
+  // Set static IP
+  WiFi.softAPConfig(local_IP, local_IP, subnet);
+
   Serial.print("Camera Stream Ready! Go to: http://");
   Serial.print(WiFi.localIP());
   
